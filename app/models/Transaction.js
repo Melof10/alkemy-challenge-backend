@@ -13,6 +13,11 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             required: true
         },
+        date: {
+            type: Sequelize.DATE,
+            allowNull: false,
+            required: true
+        },
         userId: {
             type: Sequelize.INTEGER,
             allowNull: false,
