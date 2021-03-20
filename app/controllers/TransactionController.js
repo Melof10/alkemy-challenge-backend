@@ -112,6 +112,9 @@ exports.getTransactionsIncome = (req, res) => {
         ]
     })
     .then(data => {
+        for(i = 0; i < data.length; i++){     
+            data[i].dataValues.date = setDate(data[i].dataValues.date);            
+        }
         res.send(data);
     }).catch(err => {
         res.status(500).send({
@@ -144,6 +147,9 @@ exports.getTransactionsExpenses = (req, res) => {
         ]
     })
     .then(data => {
+        for(i = 0; i < data.length; i++){     
+            data[i].dataValues.date = setDate(data[i].dataValues.date);            
+        }
         res.send(data);
     }).catch(err => {
         res.status(500).send({
@@ -241,8 +247,8 @@ exports.delete = (req, res) => {
         where: {
             id: transactionId
         }
-    }).then(data => {
-        res.send(data);
+    }).then(nums => {
+        res.send({ message: `${nums} Income deleted!` });
     }).catch(err => {
         res.status(500).send({
             errors: err.errors

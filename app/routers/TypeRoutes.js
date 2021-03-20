@@ -6,6 +6,7 @@ module.exports = app => {
       
     router.post("/", type.create);      
     router.get("/all", type.findAll);          
+    router.put("/update/:id", type.update);   
 
     app.use('/api/types', router);
 };

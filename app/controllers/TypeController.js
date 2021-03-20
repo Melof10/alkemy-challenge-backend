@@ -26,3 +26,20 @@ exports.findAll = (req, res) => {
         })
     })
 }
+
+exports.update = (req, res) => {
+    const idType = req.params.id;
+
+    Type.update(req.body, {
+        where: {
+            id: idType
+        }
+    })
+    .then(data => {
+        res.send(data);
+    }).catch(err => {
+        res.status(500).send({
+            errors: err.errors
+        })
+    })
+}
