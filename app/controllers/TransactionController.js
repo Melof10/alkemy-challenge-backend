@@ -105,8 +105,7 @@ exports.getTransactionsIncome = (req, res) => {
         where: {
             userId: id,
             typeId: 1
-        },
-        limit: 10,
+        },        
         order: [
             ['id', 'DESC']
         ]
@@ -140,8 +139,7 @@ exports.getTransactionsExpenses = (req, res) => {
         where: {
             userId: id,
             typeId: 2
-        },
-        limit: 10,
+        },        
         order: [
             ['id', 'DESC']
         ]

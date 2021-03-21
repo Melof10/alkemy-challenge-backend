@@ -3,20 +3,35 @@ module.exports = (sequelize, Sequelize) => {
         concept: {
             type: Sequelize.STRING,
             allowNull: false,
-            required: true,
-            validate: {                                
-                len: [10, 50]
-            }
+            validate: {
+                notNull: {
+                    msg: 'Debe colocar un valor'
+                }
+            }            
         },
         amount: {
             type: Sequelize.DOUBLE,
             allowNull: false,
-            required: true
+            validate: {
+                notNull: {
+                    msg: 'Debe colocar un valor'
+                },
+                isDecimal: {
+                    msg: 'Debe colocar un valor numérico'
+                }
+            }
         },
         date: {
             type: Sequelize.DATE,
             allowNull: false,
-            required: true
+            validate: {
+                notNull: {
+                    msg: 'Debe colocar un valor'
+                },
+                isDate: {
+                    msg: 'Debe ser una fecha'
+                }
+            }
         },
         userId: {
             type: Sequelize.INTEGER,
