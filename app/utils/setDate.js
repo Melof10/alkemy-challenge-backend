@@ -9,7 +9,7 @@ function setDate(date){
             weekdaysMin: 'Do_Lu_Ma_Mi_Ju_Vi_Sa'.split('_')
         }
     );               
-    return moment(date).format('D/MM/YYYY');  
+    return moment.utc(date).format('D/MM/YYYY');  
 }
 
 module.exports = setDate;

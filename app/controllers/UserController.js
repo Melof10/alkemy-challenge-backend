@@ -1,32 +1,87 @@
+const bcrypt = require('bcrypt-nodejs');
+const jwt = require('../services/jwt');
 const db = require('../models');
 const User = db.users;
 
-exports.register = (req, res) => {    
+exports.signUp = (req, res) => {    
     const user = {
-        email: req.body.email,
+        email: req.body.email.toLowerCase(),
         password: req.body.password,
-        userId: req.body.userId
-    };
+        repeatPassword: req.body.repeatPassword
+    };    
 
-    User.create(user)
-    .then(data => {
-        res.send(data);
-    }).catch(err => {                
-        res.status(500).send({                        
-            errors: err.errors
-        })            
-    })
+    if(user.password === '' || user.repeatPassword === ''){
+        res.status(500).send({
+            errors: [{                
+                message: 'Debe colocar un valor',
+                path: 'password'
+            }]
+        });
+    }else{
+        if(user.password !== user.repeatPassword){
+            res.status(500).send({
+                errors: [{                
+                    message: 'Las contraseñas no coinciden',
+                    path: 'password'
+                }]
+            });
+        }else{
+            bcrypt.hash(user.password, null, null, (err, hash) => {
+                if(err){
+                    res.status(500).send({
+                        errors: err.errors
+                    })
+                }else{
+                    user.password = hash;
+                    User.create(user)
+                    .then(data => {
+                        res.status(200).send({
+                            accessToken: jwt.createAccessToken(data),
+                            refreshToken: jwt.refreshAccessToken(data)
+                        })
+                        res.send(data);
+                    }).catch(err => {                
+                        res.status(500).send({                        
+                            errors: err.errors
+                        })            
+                    })
+                }
+            });
+        }   
+    }    
 };
 
-exports.login = (req, res) => {
-    const id = req.params.id;
+exports.signIn = (req, res) => {
+    const user = {
+        email: req.body.email.toLowerCase(),
+        password: req.body.password
+    };
 
-    User.findByPk(id)
-    .then(data => {
-        res.send(data);
+    User.findOne({
+        where: {
+            email: user.email
+        }
+    })
+    .then(data => {  
+        bcrypt.compare(user.password, data.password, (err, valid) => {
+            if(err){
+                res.status(500).send({
+                    message: 'Error en el servidor'
+                })
+            }else if(!valid){
+                res.status(500).send({
+                    message: 'Usuario o contraseña incorrecta'
+                })
+            }else{
+                res.status(200).send({
+                    accessToken: jwt.createAccessToken(data),
+                    refreshToken: jwt.refreshAccessToken(data)
+                })
+            }
+        })                      
     }).catch(err => {
         res.status(500).send({
-            message: 'error retrieving User with id= '+id
+            errors: err.errors
         });
     });
 };

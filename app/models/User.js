@@ -2,15 +2,23 @@ module.exports = (sequelize, Sequelize) => {
     const user = sequelize.define('users', {        
         email: {
             type: Sequelize.STRING,
-            unique: true,
+            allowNull: false,
+            unique: {
+                msg: 'El correo ya existe'
+            },
             validate: {
-                len: [10,20]
+                notNull: {
+                    msg: 'Debe colocar un valor'
+                }
             }
         },
         password: {
-            type: Sequelize.STRING(64),
+            type: Sequelize.STRING,
+            allowNull: false,
             validate: {
-                len: [6,20]
+                notNull: {
+                    msg: 'Debe colocar un valor'
+                }
             }            
         }
     });

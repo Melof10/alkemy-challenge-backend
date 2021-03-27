@@ -4,8 +4,8 @@ module.exports = app => {
     let express = require('express')
     let router = express.Router();
       
-    router.post("/", user.register);      
-    router.get("/:id", user.login);          
+    router.post("/signup", user.signUp);      
+    router.post("/signin", user.signIn);          
 
     app.use('/api/users', router);
 };

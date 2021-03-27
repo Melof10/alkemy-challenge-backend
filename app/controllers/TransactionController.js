@@ -3,7 +3,6 @@ const Transaction = db.transaction;
 const Type = db.types;
 const User = db.users;
 const sequelize = require('sequelize');
-const setDate = require('../utils/setDate');
 
 exports.create = (req, res) => {
     const transaction = {
@@ -76,10 +75,7 @@ exports.findAllLast = (req, res) => {
             ['id', 'DESC']
         ]
     })
-    .then(data => {                      
-        for(i = 0; i < data.length; i++){     
-            data[i].dataValues.date = setDate(data[i].dataValues.date);            
-        }
+    .then(data => {                              
         res.send(data);
     }).catch(err => {
         res.status(500).send({
@@ -102,6 +98,12 @@ exports.getTransactionsIncome = (req, res) => {
                 attributes: ['name']
             }
         ],
+        attributes: [
+            'id',
+            'concept',
+            'amount',
+            [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date']
+        ],
         where: {
             userId: id,
             typeId: 1
@@ -110,10 +112,7 @@ exports.getTransactionsIncome = (req, res) => {
             ['id', 'DESC']
         ]
     })
-    .then(data => {
-        for(i = 0; i < data.length; i++){     
-            data[i].dataValues.date = setDate(data[i].dataValues.date);            
-        }
+    .then(data => {                
         res.send(data);
     }).catch(err => {
         res.status(500).send({
@@ -136,6 +135,12 @@ exports.getTransactionsExpenses = (req, res) => {
                 attributes: ['name']
             }
         ],
+        attributes: [
+            'id',
+            'concept',
+            'amount',
+            [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date']
+        ],
         where: {
             userId: id,
             typeId: 2
@@ -144,10 +149,7 @@ exports.getTransactionsExpenses = (req, res) => {
             ['id', 'DESC']
         ]
     })
-    .then(data => {
-        for(i = 0; i < data.length; i++){     
-            data[i].dataValues.date = setDate(data[i].dataValues.date);            
-        }
+    .then(data => {        
         res.send(data);
     }).catch(err => {
         res.status(500).send({
@@ -213,7 +215,8 @@ exports.getSumExpenses = (req, res) => {
 exports.findOne = (req, res) => {
     const transactionId = req.params.id;
 
-    Transaction.findByPk(transactionId).then(data => {
+    Transaction.findByPk(transactionId)
+    .then(data => {
         res.send(data);
     }).catch(err => {
         res.status(500).send({
@@ -229,13 +232,21 @@ exports.update = (req, res) => {
         where: {
             id: transactionId
         }
-    }).then(data => {
-        res.send(data);
+    }).then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Tutorial was updated successfully."
+            });
+        } else {
+            res.send({
+                message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`
+            });
+        }
     }).catch(err => {
         res.status(500).send({
-            errors: err.errors
-        })
-    })
+            message: "Error updating Tutorial with id=" + id
+        });
+    });
 }
 
 exports.delete = (req, res) => {
