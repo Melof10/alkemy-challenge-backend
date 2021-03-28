@@ -235,16 +235,16 @@ exports.update = (req, res) => {
     }).then(num => {
         if (num == 1) {
             res.send({
-                message: "Tutorial was updated successfully."
+                message: "Transacción actualizada correctamente"
             });
         } else {
             res.send({
-                message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`
+                message: "No se pudo actualizar la transacción"
             });
         }
     }).catch(err => {
         res.status(500).send({
-            message: "Error updating Tutorial with id=" + id
+            message: "Error al actualizar la transacción" + id
         });
     });
 }
@@ -257,7 +257,7 @@ exports.delete = (req, res) => {
             id: transactionId
         }
     }).then(nums => {
-        res.send({ message: `${nums} Income deleted!` });
+        res.send({ message: `${nums} Transacción eliminada!` });
     }).catch(err => {
         res.status(500).send({
             errors: err.errors

@@ -6,56 +6,36 @@ const User = db.users;
 exports.signUp = (req, res) => {    
     const user = {
         email: req.body.email.toLowerCase(),
-        password: req.body.password,
-        repeatPassword: req.body.repeatPassword
+        password: req.body.password
     };    
-
-    if(user.password === '' || user.repeatPassword === ''){
-        res.status(500).send({
-            errors: [{                
-                message: 'Debe colocar un valor',
-                path: 'password'
-            }]
-        });
-    }else{
-        if(user.password !== user.repeatPassword){
+    
+    bcrypt.hash(user.password, null, null, (err, hash) => {
+        if(err){
             res.status(500).send({
-                errors: [{                
-                    message: 'Las contraseñas no coinciden',
-                    path: 'password'
-                }]
-            });
+                message: 'Error del servidor'
+            })
         }else{
-            bcrypt.hash(user.password, null, null, (err, hash) => {
-                if(err){
-                    res.status(500).send({
-                        errors: err.errors
-                    })
-                }else{
-                    user.password = hash;
-                    User.create(user)
-                    .then(data => {
-                        res.status(200).send({
-                            accessToken: jwt.createAccessToken(data),
-                            refreshToken: jwt.refreshAccessToken(data)
-                        })
-                        res.send(data);
-                    }).catch(err => {                
-                        res.status(500).send({                        
-                            errors: err.errors
-                        })            
-                    })
-                }
-            });
-        }   
-    }    
+            user.password = hash;
+            User.create(user)
+            .then(data => {
+                res.status(200).send({
+                    accessToken: jwt.createAccessToken(data),
+                    refreshToken: jwt.refreshAccessToken(data)
+                })            
+            }).catch(err => {                                
+                res.status(500).send({                        
+                    message: err.errors
+                })            
+            })
+        }
+    })        
 };
 
 exports.signIn = (req, res) => {
     const user = {
-        email: req.body.email.toLowerCase(),
+        email: req.body.email,
         password: req.body.password
-    };
+    };    
 
     User.findOne({
         where: {
@@ -64,11 +44,11 @@ exports.signIn = (req, res) => {
     })
     .then(data => {  
         bcrypt.compare(user.password, data.password, (err, valid) => {
-            if(err){
+            if(err){                         
                 res.status(500).send({
                     message: 'Error en el servidor'
                 })
-            }else if(!valid){
+            }else if(!valid){                
                 res.status(500).send({
                     message: 'Usuario o contraseña incorrecta'
                 })
@@ -79,9 +59,9 @@ exports.signIn = (req, res) => {
                 })
             }
         })                      
-    }).catch(err => {
+    }).catch(err => {              
         res.status(500).send({
-            errors: err.errors
-        });
+            message: 'Usuario inexistente'
+        })
     });
 };
