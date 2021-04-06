@@ -18,6 +18,8 @@ const getRoutes = require('./app/routers');
 
 getRoutes(app);
 
-app.listen(config.port, function(){
-    console.log(`Listening http://localhost:${config.port}`);
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, function(){
+    console.log(`Listening http://localhost:${PORT}`);
 })

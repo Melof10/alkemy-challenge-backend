@@ -11,7 +11,7 @@ exports.create = (req, res) => {
         date: req.body.date,        
         userId: req.body.userId,
         typeId: req.body.typeId
-    };    
+    }
 
     Transaction.create(transaction)
     .then(data => {
@@ -106,7 +106,7 @@ exports.getTransactionsIncome = (req, res) => {
         ],
         where: {
             userId: id,
-            typeId: 1
+            typeId: 24
         },        
         order: [
             ['id', 'DESC']
@@ -143,7 +143,7 @@ exports.getTransactionsExpenses = (req, res) => {
         ],
         where: {
             userId: id,
-            typeId: 2
+            typeId: 34
         },        
         order: [
             ['id', 'DESC']
@@ -173,7 +173,7 @@ exports.getSumIncome = (req, res) => {
         ],
         where: {
             userId: id,
-            typeId: 1
+            typeId: 24
         }
     })
     .then(data => {
@@ -200,7 +200,7 @@ exports.getSumExpenses = (req, res) => {
         ],
         where: {
             userId: id,
-            typeId: 2
+            typeId: 34
         }
     })
     .then(data => {

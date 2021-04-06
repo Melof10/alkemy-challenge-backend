@@ -2,11 +2,11 @@ const dbConfig = require('../config/index');
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
-    'alkemyChallenge',
-    'root',
-    '',
+    'heroku_090c457dbf44721',
+    'b73b5a6663d11e',
+    '8989c1eb',
     {
-        host: dbConfig.host,
+        host: 'us-cdbr-east-03.cleardb.com',
         dialect: 'mysql',
         operatorAliases: false,
         pool: {
